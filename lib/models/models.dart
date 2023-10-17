@@ -10,14 +10,14 @@ class Block {
     this.timestamp,
   );
 
-  dynamic minedBy;
-  dynamic transactions;
-  dynamic height;
-  dynamic difficulty;
-  dynamic hash;
-  dynamic previousHash;
-  dynamic nonce;
-  dynamic timestamp;
+  String minedBy;
+  String transactions;
+  int height;
+  String difficulty;
+  String hash;
+  String previousHash;
+  String nonce;
+  int timestamp;
 }
 
 class Peer {
@@ -27,9 +27,9 @@ class Peer {
     this.lastSeen,
   );
 
-  dynamic ip;
-  dynamic port;
-  dynamic lastSeen;
+  String ip;
+  int port;
+  int lastSeen;
 }
 
 class Ping {
@@ -39,9 +39,9 @@ class Ping {
     this.isMiner,
   );
 
-dynamic blockHeight;
-dynamic peerCount;
-dynamic isMiner;
+  int blockHeight;
+  int peerCount;
+  bool isMiner;
 }
 
 class Transaction {
@@ -54,10 +54,10 @@ class Transaction {
     this.amount,
   );
 
-  dynamic hash;
-  dynamic sender;
-  dynamic receiver;
-  dynamic signature;
-  dynamic timestamp;
-  dynamic amount;
+  String hash;
+  String sender;
+  String receiver;
+  String signature;
+  int timestamp;
+  double amount;
 }
