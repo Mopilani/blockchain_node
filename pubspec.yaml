@@ -10,6 +10,15 @@ dependencies:
   args: ^2.3.0
   shelf: ^1.4.0
   shelf_router: ^1.1.0
+  shelf_web_socket: ^1.0.1
+  web_socket_channel: ^2.2.0
+  shelf_static: ^1.1.0
+  hash: ^1.0.4
+  hex: ^0.2.0
+  mongo_dart: ^0.9.3
+  uuid: ^3.0.7
+  pkce: ^1.1.0+1
+  mime: any
 
 dev_dependencies:
   http: ^0.13.0
