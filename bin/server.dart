@@ -9,6 +9,11 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'package:shelf_web_socket/shelf_web_socket.dart' as sws;
 
+String nodeIdentifier = Uuid().v4().replaceAll('-', '');
+
+// # Instantiate the Blockchain
+var blockchain = Blockchain();
+
 // Configure routes.
 final _router = Router()
   ..all('/', sws.webSocketHandler)
@@ -18,7 +23,28 @@ final _router = Router()
   ..get('/echo/<message>', _echoHandler);
 
 Response _mine(Request req) {
-  return Response.ok('Hello, World!\n');
+//  # We run the proof of work algorithm to get the next proof...
+  Map<String, dynamic> lastBlock = blockchain.lastBlock;
+  int lastProof = lastBlock['proof'];
+  int proof = blockchain.proofOfWork(lastProof);
+
+//  # We must receive a reward for finding the proof.
+//  # The sender is "0" to signify that this node has mined a new coin.
+  blockchain.newTransaction("0", nodeIdentifier, 1);
+
+  // # Forge the new Block by adding it to the chain
+  String previousHash = Blockchain.hash(lastBlock);
+  Map<String, dynamic> block = blockchain.newBlock(proof, previousHash);
+
+  Map<String, dynamic> result = {
+    'message': "New Block Forged",
+    'index': block['index'],
+    'transactions': block['transactions'],
+    'proof': block['proof'],
+    'previousHash': block['previousHash'],
+  };
+
+  return FixedResp.okM('OK', result);
 }
 
 Response _newTransaction(Request req) {
@@ -58,11 +84,6 @@ Response _echoHandler(Request request) {
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
-
-  String nodeIdentifier = Uuid().v4().replaceAll('-', '');
-
-  // # Instantiate the Blockchain
-  var blockchain = Blockchain();
 
   // Configure a pipeline that logs requests.
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
