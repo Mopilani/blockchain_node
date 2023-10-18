@@ -28,6 +28,15 @@ Future<void> main(List<String> args) async {
     print(res.body);
   }
 
+  Future<void> chain() async {
+    var res = await http.get(
+      Uri.parse('http://localhost:8886/chain'),
+    );
+
+    print(res.statusCode);
+    print(res.body);
+  }
+
   while (true) {
     var command = stdin.readLineSync();
     if (command != null) {
@@ -38,8 +47,8 @@ Future<void> main(List<String> args) async {
         case 'mine':
           await mine();
           break;
-        case 'mine':
-          await newTransaction();
+        case 'chain':
+          await chain();
           break;
         default:
       }
