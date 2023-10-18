@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:blockchain_node/models/blockchain.dart';
 import 'package:blockchain_node/utils/shelf_response_extentsion.dart';
@@ -23,13 +24,13 @@ final _router = Router()
   ..get('/echo/<message>', _echoHandler);
 
 Response _mine(Request req) {
-//  # We run the proof of work algorithm to get the next proof...
+  //  # We run the proof of work algorithm to get the next proof...
   Map<String, dynamic> lastBlock = blockchain.lastBlock;
   int lastProof = lastBlock['proof'];
   int proof = blockchain.proofOfWork(lastProof);
 
-//  # We must receive a reward for finding the proof.
-//  # The sender is "0" to signify that this node has mined a new coin.
+  //  # We must receive a reward for finding the proof.
+  //  # The sender is "0" to signify that this node has mined a new coin.
   blockchain.newTransaction("0", nodeIdentifier, 1);
 
   // # Forge the new Block by adding it to the chain
@@ -83,7 +84,7 @@ Response _echoHandler(Request request) {
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
-  final ip = InternetAddress.anyIPv4;
+  final ip = InternetAddress.fromRawAddress([0, 0, 0, 0] as Uint8List);
 
   // Configure a pipeline that logs requests.
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
