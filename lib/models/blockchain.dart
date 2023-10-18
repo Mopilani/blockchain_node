@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:blockchain_node/shared.dart';
 import 'package:hash/hash.dart';
@@ -10,6 +11,11 @@ abstract class Blockchain {
 
   static final List chain = [];
   static final List currentTransactions = [];
+
+  static late String target =
+      'e509ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+  static late String firstBlockHash =
+      'e509000000000000000000000000000000000000000000000000000000000000';
 
   /// Creates a new Block and adds it to the chain
   ///
@@ -49,7 +55,7 @@ abstract class Blockchain {
     List<int> guessBytes = '$lastProof$proof'.codeUnits;
     String guessHash = HEX.encode(SHA256().update(guessBytes).digest());
     // print(guessHash);
-    return guessHash.substring(0, 4) == "esdg";
+    return guessHash.substring(0, 4) == "e509";
   }
 
   /// Hashes a Block
@@ -68,7 +74,7 @@ abstract class Blockchain {
   }
 
   /// Returns the last Block in the chain
-  dynamic get lastBlock;
+  Map<String, dynamic> get lastBlock;
 
   static Future<void> loadBlocks() async {
     var ds = db.collection(BlockchainImpl.collectionName).find();
@@ -76,18 +82,27 @@ abstract class Blockchain {
       Blockchain.chain.add(block..remove('_id'));
     }).asFuture();
   }
+
+  /// Check if a block's hash is less than the target...
+  static bool validBlock(block) {
+    if (BigInt.parse(block["hash"], radix: 16) <
+        BigInt.parse(target, radix: 16)) {
+      return true;
+    }
+    return false;
+  }
 }
 
 class BlockchainImpl implements Blockchain {
   BlockchainImpl() {
-    print('Init with gensis block');
+    stdout.writeln('Creating genesis block');
     newBlock(100, '1');
   }
 
   static String collectionName = 'blocks';
 
   @override
-  get lastBlock => Blockchain.chain.last;
+  Map<String, dynamic> get lastBlock => Blockchain.chain.last;
 
   @override
   Map<String, dynamic> newBlock(int proof, String previousHash) {
@@ -109,8 +124,8 @@ class BlockchainImpl implements Blockchain {
   }
 
   @override
-  int newTransaction(
-      String privateKey, String senderPublicKey, String recipientPublicKey, double amount) {
+  int newTransaction(String privateKey, String senderPublicKey,
+      String recipientPublicKey, double amount) {
     var transaction = {
       'sender': senderPublicKey,
       'recipient': recipientPublicKey,
