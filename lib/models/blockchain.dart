@@ -8,7 +8,13 @@ abstract class Blockchain {
   newBlock();
 
   /// Adds a new transaction to the list of transactions
-  newTransaction();
+  ///
+  /// Creates a new transaction to go into the next mined Block
+  /// param sender: <str> Address of the Sender
+  /// param recipient: <str> Address of the Recipient
+  /// param amount: <int> Amount
+  /// return: <int> The index of the Block that will hold this transaction
+  int newTransaction(sender, recipient, amount);
 
   /// Hashes a Block
   static hash(block) {}
@@ -29,8 +35,13 @@ class BlockchainImpl implements Blockchain {
   }
 
   @override
-  newTransaction() {
-    // TODO: implement newTransaction
-    throw UnimplementedError();
+  int newTransaction(sender, recipient, amount) {
+    Blockchain.currentTransactions.add({
+      'sender': sender,
+      'recipient': recipient,
+      'amount': amount,
+    });
+
+    return lastBlock['index'] + 1;
   }
 }
