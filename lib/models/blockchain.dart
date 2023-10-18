@@ -38,7 +38,7 @@ abstract class Blockchain {
   /// param proof: <int> Current Proof
   /// return: <bool> True if correct, False if not.
   static bool validProof(int lastProof, int proof) {
-    List<int> guessBytes = '{lastProof}{proof}'.codeUnits;
+    List<int> guessBytes = '$lastProof$proof'.codeUnits;
     String guessHash = HEX.encode(SHA256().update(guessBytes).digest());
     return guessHash.substring(0, 4) == "0000";
   }
@@ -77,7 +77,7 @@ class BlockchainImpl implements Blockchain {
       'timestamp': DateTime.timestamp(),
       'transactions': Blockchain.currentTransactions,
       'proof': proof,
-      'previous_hash': previousHash ?? Blockchain.hash(Blockchain.chain[-1]),
+      'previousHash': previousHash ?? Blockchain.hash(Blockchain.chain[-1]),
     };
 
     // Reset the current list of transactions
