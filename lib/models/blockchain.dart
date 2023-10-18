@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:hash/hash.dart';
+import 'package:hex/hex.dart';
+
 abstract class Blockchain {
   factory Blockchain() => BlockchainImpl();
 
@@ -22,7 +27,19 @@ abstract class Blockchain {
   int newTransaction(sender, recipient, amount);
 
   /// Hashes a Block
-  static hash(block) {}
+  ///
+  // Creates a SHA-256 hash of a Block
+  // param block: <dict> Block
+  // return: <str>
+  static hash(block) {
+    // # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
+    List<int> blockStringBytes = json
+        .encode(
+          block, /*sort_keys = True*/
+        )
+        .codeUnits;
+    return HEX.encode(SHA256().update(blockStringBytes).digest());
+  }
 
   /// Returns the last Block in the chain
   dynamic get lastBlock;
