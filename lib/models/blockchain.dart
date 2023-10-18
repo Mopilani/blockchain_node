@@ -51,8 +51,7 @@ class BlockchainImpl implements Blockchain {
   }
 
   @override
-  // TODO: implement lastBlock
-  get lastBlock => throw UnimplementedError();
+  get lastBlock => Blockchain.chain.last;
 
   @override
   Map<String, dynamic> newBlock(proof, [previousHash]) {
