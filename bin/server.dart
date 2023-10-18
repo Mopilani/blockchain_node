@@ -9,7 +9,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 
 void main(List<String> args) async {
-  service = MongoService(dbURI: 'mongodb://localhost:27017/batarina');
+  service = MongoService(dbURI: 'mongodb://localhost:27017/blockchain_node');
   await service.initial();
   db = service.db;
 
