@@ -16,15 +16,6 @@ extension Body on Request {
   Future<dynamic> getJsonBody() async => json.decode(await readAsString());
 }
 
-// Map<int, JwtClaim> calims = {};
-
-// extension CalimHelper on Request {
-//   Future<int> registerCalim(JwtClaim claim) async {
-//     calims.addAll({hashCode: claim});
-//     return hashCode;
-//   }
-// }
-
 class FixedResp {
   static Response okM(String message, Object? result,
       [bool isDataStream = false]) {
