@@ -14,6 +14,9 @@ void main(List<String> args) async {
   db = service.db;
 
   blockchain = Blockchain();
+
+  await Blockchain.loadBlocks();
+
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.fromRawAddress(Uint8List.fromList([0, 0, 0, 0]));
 
