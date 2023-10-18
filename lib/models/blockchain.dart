@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:blockchain_node/shared.dart';
 import 'package:hash/hash.dart';
 import 'package:hex/hex.dart';
 import 'package:pinenacl/ed25519.dart';
@@ -71,6 +72,8 @@ class BlockchainImpl implements Blockchain {
     newBlock(100, '1');
   }
 
+  static String collectionName = 'blocks';
+
   @override
   get lastBlock => Blockchain.chain.last;
 
@@ -88,7 +91,8 @@ class BlockchainImpl implements Blockchain {
     Blockchain.currentTransactions.clear();
 
     Blockchain.chain.add(block);
-    // print('Added Gensis Block: $block');
+
+    db.collection(collectionName).insert(block);
     return block;
   }
 
