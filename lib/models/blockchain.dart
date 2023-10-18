@@ -119,6 +119,8 @@ class BlockchainImpl implements Blockchain {
     var signature = signingKey.sign(Uint8List.fromList(transBytes));
     transaction["signature"] = HEX.encode(signature.message.toList());
 
+    print('Transaction: $transaction');
+
     // return transaction;
     return lastBlock['index'] + 1;
   }
@@ -131,5 +133,12 @@ class BlockchainImpl implements Blockchain {
     }
 
     return proof;
+  }
+
+  static Future<void> loadBlocks() async {
+    var ds = db.collection(collectionName).find();
+    await ds.listen((block) {
+      Blockchain.chain.add(block..remove('_id'));
+    }).asFuture();
   }
 }
