@@ -5,7 +5,12 @@ abstract class Blockchain {
   static final List currentTransactions = [];
 
   /// Creates a new Block and adds it to the chain
-  newBlock();
+  ///
+  /// Create a new Block in the Blockchain
+  /// param proof: <int> The proof given by the Proof of Work algorithm
+  /// param previous_hash: (Optional) <str> Hash of previous Block
+  /// return: <dict> New Block
+  newBlock(proof, [previousHash]);
 
   /// Adds a new transaction to the list of transactions
   ///
@@ -24,12 +29,16 @@ abstract class Blockchain {
 }
 
 class BlockchainImpl implements Blockchain {
+  BlockchainImpl() {
+    newBlock(100, 1);
+  }
+
   @override
   // TODO: implement lastBlock
   get lastBlock => throw UnimplementedError();
 
   @override
-  newBlock() {
+  newBlock(proof, [previousHash]) {
     // TODO: implement newBlock
     throw UnimplementedError();
   }
