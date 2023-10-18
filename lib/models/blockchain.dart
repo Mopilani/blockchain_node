@@ -64,6 +64,13 @@ abstract class Blockchain {
 
   /// Returns the last Block in the chain
   dynamic get lastBlock;
+
+  static Future<void> loadBlocks() async {
+    var ds = db.collection(BlockchainImpl.collectionName).find();
+    await ds.listen((block) {
+      Blockchain.chain.add(block..remove('_id'));
+    }).asFuture();
+  }
 }
 
 class BlockchainImpl implements Blockchain {
@@ -133,12 +140,5 @@ class BlockchainImpl implements Blockchain {
     }
 
     return proof;
-  }
-
-  static Future<void> loadBlocks() async {
-    var ds = db.collection(collectionName).find();
-    await ds.listen((block) {
-      Blockchain.chain.add(block..remove('_id'));
-    }).asFuture();
   }
 }
