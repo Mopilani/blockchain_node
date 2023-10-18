@@ -60,7 +60,7 @@ Response _newTransaction(Request req) {
   }
 
   // Create a new Transaction
-  int index = Blockchain().newTransaction(
+  int index = blockchain.newTransaction(
     data['sender'],
     data['recipient'],
     data['amount'],
@@ -84,7 +84,7 @@ Response _echoHandler(Request request) {
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
-  final ip = InternetAddress.fromRawAddress([0, 0, 0, 0] as Uint8List);
+  final ip = InternetAddress.fromRawAddress(Uint8List.fromList([0, 0, 0, 0]));
 
   // Configure a pipeline that logs requests.
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
