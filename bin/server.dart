@@ -4,9 +4,11 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+import 'package:shelf_web_socket/shelf_web_socket.dart' as sws;
+
 // Configure routes.
 final _router = Router()
-  ..get('/', _rootHandler)
+  ..all('/', sws.webSocketHandler)
   ..get('/echo/<message>', _echoHandler);
 
 Response _rootHandler(Request req) {
