@@ -15,29 +15,29 @@ abstract class Blockchain {
   /// param proof: <int> The proof given by the Proof of Work algorithm
   /// param previous_hash: (Optional) <str> Hash of previous Block
   /// return: <dict> New Block
-  Map<String, dynamic> newBlock(proof, [previousHash]);
+  Map<String, dynamic> newBlock(int proof, [String? previousHash]);
 
   /// Adds a new transaction to the list of transactions
   ///
   /// Creates a new transaction to go into the next mined Block
   /// param sender: <str> Address of the Sender
   /// param recipient: <str> Address of the Recipient
-  /// param amount: <int> Amount
+  /// param amount: <double> Amount
   /// return: <int> The index of the Block that will hold this transaction
-  int newTransaction(sender, recipient, amount);
+  int newTransaction(String sender, String recipient, double amount);
 
   /// Simple Proof of Work Algorithm:
   ///  - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'
   ///  - p is the previous proof, and p' is the new proof
   /// param last_proof: <int>
   /// return: <int>
-  int proofOfWork(lastProof);
+  int proofOfWork(int lastProof);
 
   /// Validates the Proof: Does hash(last_proof, proof) contain 4 leading zeroes?
   /// param last_proof: <int> Previous Proof
   /// param proof: <int> Current Proof
   /// return: <bool> True if correct, False if not.
-  static bool validProof(lastProof, proof) {
+  static bool validProof(int lastProof, int proof) {
     List<int> guessBytes = '{lastProof}{proof}'.codeUnits;
     String guessHash = HEX.encode(SHA256().update(guessBytes).digest());
     return guessHash.substring(0, 4) == "0000";
@@ -64,14 +64,14 @@ abstract class Blockchain {
 
 class BlockchainImpl implements Blockchain {
   BlockchainImpl() {
-    newBlock(100, 1);
+    newBlock(100, '1');
   }
 
   @override
   get lastBlock => Blockchain.chain.last;
 
   @override
-  Map<String, dynamic> newBlock(proof, [previousHash]) {
+  Map<String, dynamic> newBlock(int proof, [String? previousHash]) {
     Map<String, dynamic> block = {
       'index': Blockchain.chain.length + 1,
       'timestamp': DateTime.timestamp(),
@@ -88,7 +88,7 @@ class BlockchainImpl implements Blockchain {
   }
 
   @override
-  int newTransaction(sender, recipient, amount) {
+  int newTransaction(String sender, String recipient, double amount) {
     Blockchain.currentTransactions.add({
       'sender': sender,
       'recipient': recipient,
@@ -99,9 +99,9 @@ class BlockchainImpl implements Blockchain {
   }
 
   @override
-  int proofOfWork(lastProof) {
+  int proofOfWork(int lastProof) {
     int proof = 0;
-    while (validProof(lastProof, proof)) {
+    while (Blockchain.validProof(lastProof, proof)) {
       proof += 1;
     }
 
