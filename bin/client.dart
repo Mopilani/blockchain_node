@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 Future<void> main(List<String> args) async {
+  String baseUrl = 'http://localhost:8886';
   Future<void> newTransaction() async {
     Map<String, dynamic> newTrans = {
       "sender": "my address",
@@ -11,7 +12,7 @@ Future<void> main(List<String> args) async {
       "amount": 5.0,
     };
     var res = await http.post(
-      Uri.parse('http://localhost:8886/transactions/new'),
+      Uri.parse('$baseUrl/transactions/new'),
       body: json.encode(newTrans),
     );
 
@@ -21,7 +22,7 @@ Future<void> main(List<String> args) async {
 
   Future<void> mine() async {
     var res = await http.get(
-      Uri.parse('http://localhost:8886/mine'),
+      Uri.parse('$baseUrl/mine'),
     );
 
     print(res.statusCode);
@@ -30,7 +31,7 @@ Future<void> main(List<String> args) async {
 
   Future<void> chain() async {
     var res = await http.get(
-      Uri.parse('http://localhost:8886/chain'),
+      Uri.parse('$baseUrl/chain'),
     );
 
     print(res.statusCode);
