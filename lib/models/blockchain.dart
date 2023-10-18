@@ -31,7 +31,7 @@ abstract class Blockchain {
   // Creates a SHA-256 hash of a Block
   // param block: <dict> Block
   // return: <str>
-  static hash(block) {
+  static String hash(Map<String, dynamic> block) {
     // # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
     List<int> blockStringBytes = json
         .encode(
