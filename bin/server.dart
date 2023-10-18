@@ -52,7 +52,7 @@ Future<Response> _newTransaction(Request req) async {
   var data = (await req.getJsonBody()) as Map<String, dynamic>;
 
   // Check that the required fields are in the POST'ed data
-  List<String> requiredData = ['sender', 'recipient', 'amount'];
+  List<String> requiredData = ['privateKey', 'sender', 'recipient', 'amount'];
   for (var k in requiredData) {
     if (!data.containsKey(k)) {
       return FixedResp.badRequest('Missing values');
@@ -61,6 +61,7 @@ Future<Response> _newTransaction(Request req) async {
 
   // Create a new Transaction
   int index = blockchain.newTransaction(
+    data['privateKey'],
     data['sender'],
     data['recipient'],
     data['amount'],
