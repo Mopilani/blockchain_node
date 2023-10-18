@@ -28,6 +28,17 @@ class FixedResp {
     );
   }
 
+  static Response created(String message, Object? result,
+      [bool isDataStream = false]) {
+    return Response(
+      HttpStatus.created,
+      body: json.encode({
+        DbBodykvs.message: message,
+        DbBodykvs.result: result,
+      }),
+    );
+  }
+
   static Response okStream(String message, Stream<List<int>> result,
       [Map<String, String> headers = const {}]) {
     return Response(
