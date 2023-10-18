@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:hash/hash.dart';
 import 'package:hex/hex.dart';
+import 'package:pinenacl/ed25519.dart';
 
 abstract class Blockchain {
   factory Blockchain() => BlockchainImpl();
@@ -24,7 +25,8 @@ abstract class Blockchain {
   /// param recipient: <str> Address of the Recipient
   /// param amount: <double> Amount
   /// return: <int> The index of the Block that will hold this transaction
-  int newTransaction(String sender, String recipient, double amount);
+  int newTransaction(
+      String privateKey, String sender, String recipient, double amount);
 
   /// Simple Proof of Work Algorithm:
   ///  - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'
@@ -91,13 +93,29 @@ class BlockchainImpl implements Blockchain {
   }
 
   @override
-  int newTransaction(String sender, String recipient, double amount) {
-    Blockchain.currentTransactions.add({
+  int newTransaction(
+      String privateKey, String sender, String recipient, double amount) {
+    var transaction = {
       'sender': sender,
       'recipient': recipient,
       'amount': amount,
-    });
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+    };
 
+    Blockchain.currentTransactions.add(transaction);
+
+    List<int> transBytes = ascii.encode(json.encode(
+      transaction, /*sort_keys=True*/
+    ));
+
+    // Generate a signing key from the private key
+    final signingKey = SigningKey.generate();
+
+    // Now add the signature to the original transaction
+    var signature = signingKey.sign(Uint8List.fromList(transBytes));
+    transaction["signature"] = HEX.encode(signature.message.toList());
+
+    // return transaction;
     return lastBlock['index'] + 1;
   }
 
