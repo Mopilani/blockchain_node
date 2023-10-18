@@ -17,7 +17,7 @@ abstract class Blockchain {
   /// param proof: <int> The proof given by the Proof of Work algorithm
   /// param previous_hash: (Optional) <str> Hash of previous Block
   /// return: <dict> New Block
-  Map<String, dynamic> newBlock(int proof, [String? previousHash]);
+  Map<String, dynamic> newBlock(int proof, String previousHash);
 
   /// Adds a new transaction to the list of transactions
   ///
@@ -27,7 +27,12 @@ abstract class Blockchain {
   /// param amount: <double> Amount
   /// return: <int> The index of the Block that will hold this transaction
   int newTransaction(
-      String privateKey, String sender, String recipient, double amount);
+      String privateKey, String publikKey, String recipient, double amount);
+
+  /// Verifies that a given transaction was sent from the sender
+  /// param tx: The transaction dict
+  /// return: <bool>
+  bool validateTransaction(Map<String, dynamic> transaction);
 
   /// Simple Proof of Work Algorithm:
   ///  - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'
@@ -44,7 +49,7 @@ abstract class Blockchain {
     List<int> guessBytes = '$lastProof$proof'.codeUnits;
     String guessHash = HEX.encode(SHA256().update(guessBytes).digest());
     // print(guessHash);
-    return guessHash.substring(0, 4) == "0000";
+    return guessHash.substring(0, 4) == "esdg";
   }
 
   /// Hashes a Block
@@ -85,13 +90,13 @@ class BlockchainImpl implements Blockchain {
   get lastBlock => Blockchain.chain.last;
 
   @override
-  Map<String, dynamic> newBlock(int proof, [String? previousHash]) {
+  Map<String, dynamic> newBlock(int proof, String previousHash) {
     Map<String, dynamic> block = {
       'index': Blockchain.chain.length + 1,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'transactions': [...Blockchain.currentTransactions],
       'proof': proof,
-      'previousHash': previousHash ?? Blockchain.hash(Blockchain.chain[-1]),
+      'previousHash': previousHash,
     };
 
     // Reset the current list of transactions
@@ -105,10 +110,10 @@ class BlockchainImpl implements Blockchain {
 
   @override
   int newTransaction(
-      String privateKey, String sender, String recipient, double amount) {
+      String privateKey, String senderPublicKey, String recipientPublicKey, double amount) {
     var transaction = {
-      'sender': sender,
-      'recipient': recipient,
+      'sender': senderPublicKey,
+      'recipient': recipientPublicKey,
       'amount': amount,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
@@ -140,5 +145,34 @@ class BlockchainImpl implements Blockchain {
     }
 
     return proof;
+  }
+
+  @override
+  bool validateTransaction(Map<String, dynamic> transaction) {
+    String publicKey = transaction["sender"];
+
+    // We need to strip the "ignature" key from the tx
+    String signature = transaction.remove("signature");
+    // String signatureBytes = HEX.encode(signature.codeUnits);
+
+    Uint8List transactionBytes = ascii.encode(json.encode(transaction));
+
+    // Generate a verifying key from the public key
+    var verifyKey = VerifyKey(Uint8List.fromList(HEX.decode(publicKey)));
+
+    // Attempt to verify the signature
+    try {
+      verifyKey.verify(
+        message: transactionBytes,
+        signature: SignedMessage.fromList(
+          signedMessage: Uint8List.fromList(signature.codeUnits),
+        ).signature,
+      );
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    // except BadSignatureError:
+    return true;
   }
 }
