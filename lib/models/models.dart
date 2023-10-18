@@ -8,6 +8,8 @@ class Block {
     required this.previousHash,
     required this.nonce,
     required this.timestamp,
+    required this.index,
+    required this.proof,
   });
 
   String minedBy;
@@ -18,6 +20,8 @@ class Block {
   String previousHash;
   String nonce;
   int timestamp;
+  int index;
+  int proof;
 
   Map<String, dynamic> asMap() {
     return {
@@ -29,6 +33,8 @@ class Block {
       'previousHash': previousHash,
       'nonce': nonce,
       'timestamp': timestamp,
+      'index': index,
+      'proof': proof,
     };
   }
 
@@ -42,6 +48,8 @@ class Block {
       previousHash: data['previousHash'],
       nonce: data['nonce'],
       timestamp: data['timestamp'],
+      index: data['index'],
+      proof: data['proof'],
     );
   }
 }
