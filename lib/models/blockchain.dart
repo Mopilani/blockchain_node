@@ -1,5 +1,6 @@
 abstract class Blockchain {
-  Blockchain();
+  factory Blockchain() => BlockchainImpl();
+
   static final List chain = [];
   static final List currentTransactions = [];
 
@@ -14,4 +15,22 @@ abstract class Blockchain {
 
   /// Returns the last Block in the chain
   dynamic get lastBlock;
+}
+
+class BlockchainImpl implements Blockchain {
+  @override
+  // TODO: implement lastBlock
+  get lastBlock => throw UnimplementedError();
+
+  @override
+  newBlock() {
+    // TODO: implement newBlock
+    throw UnimplementedError();
+  }
+
+  @override
+  newTransaction() {
+    // TODO: implement newTransaction
+    throw UnimplementedError();
+  }
 }
