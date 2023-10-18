@@ -10,7 +10,7 @@ abstract class Blockchain {
   /// param proof: <int> The proof given by the Proof of Work algorithm
   /// param previous_hash: (Optional) <str> Hash of previous Block
   /// return: <dict> New Block
-  newBlock(proof, [previousHash]);
+  Map<String, dynamic> newBlock(proof, [previousHash]);
 
   /// Adds a new transaction to the list of transactions
   ///
@@ -38,9 +38,20 @@ class BlockchainImpl implements Blockchain {
   get lastBlock => throw UnimplementedError();
 
   @override
-  newBlock(proof, [previousHash]) {
-    // TODO: implement newBlock
-    throw UnimplementedError();
+  Map<String, dynamic> newBlock(proof, [previousHash]) {
+    Map<String, dynamic> block = {
+      'index': Blockchain.chain.length + 1,
+      'timestamp': DateTime.timestamp(),
+      'transactions': Blockchain.currentTransactions,
+      'proof': proof,
+      'previous_hash': previousHash ?? Blockchain.hash(Blockchain.chain[-1]),
+    };
+
+    // Reset the current list of transactions
+    Blockchain.currentTransactions.clear();
+
+    Blockchain.chain.add(block);
+    return block;
   }
 
   @override
