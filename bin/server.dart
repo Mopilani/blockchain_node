@@ -22,7 +22,24 @@ Response _mine(Request req) {
 }
 
 Response _newTransaction(Request req) {
-  return Response.ok('Hello, World!\n');
+  var data = req.getJsonBody() as Map<String, dynamic>;
+
+  // Check that the required fields are in the POST'ed data
+  List<String> requiredData = ['sender', 'recipient', 'amount'];
+  for (var k in requiredData) {
+    if (data.containsKey(k)) {
+      return FixedResp.badRequest('Missing values');
+    }
+  }
+
+  // Create a new Transaction
+  int index = Blockchain().newTransaction(
+    data['sender'],
+    data['recipient'],
+    data['amount'],
+  );
+
+  return FixedResp.created('Transaction will be added to Block $index', index);
 }
 
 Response _chain(Request req) {
