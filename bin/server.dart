@@ -13,7 +13,7 @@ import 'package:shelf_web_socket/shelf_web_socket.dart' as sws;
 String nodeIdentifier = Uuid().v4().replaceAll('-', '');
 
 // # Instantiate the Blockchain
-var blockchain = Blockchain();
+late Blockchain blockchain;
 
 // Configure routes.
 final _router = Router()
@@ -48,8 +48,8 @@ Response _mine(Request req) {
   return FixedResp.okM('OK', result);
 }
 
-Response _newTransaction(Request req) {
-  var data = req.getJsonBody() as Map<String, dynamic>;
+Future<Response> _newTransaction(Request req) async {
+  var data = (await req.getJsonBody()) as Map<String, dynamic>;
 
   // Check that the required fields are in the POST'ed data
   List<String> requiredData = ['sender', 'recipient', 'amount'];
@@ -83,6 +83,7 @@ Response _echoHandler(Request request) {
 }
 
 void main(List<String> args) async {
+  blockchain = Blockchain();
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.fromRawAddress(Uint8List.fromList([0, 0, 0, 0]));
 

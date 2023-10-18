@@ -37,6 +37,7 @@ Future<void> main(List<String> args) async {
     print(res.body);
   }
 
+  print('Blockchain Node Client Running');
   while (true) {
     var command = stdin.readLineSync();
     if (command != null) {
