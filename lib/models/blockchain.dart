@@ -40,7 +40,7 @@ abstract class Blockchain {
   static bool validProof(int lastProof, int proof) {
     List<int> guessBytes = '$lastProof$proof'.codeUnits;
     String guessHash = HEX.encode(SHA256().update(guessBytes).digest());
-    print(guessHash);
+    // print(guessHash);
     return guessHash.substring(0, 4) == "0000";
   }
 
@@ -77,7 +77,7 @@ class BlockchainImpl implements Blockchain {
     Map<String, dynamic> block = {
       'index': Blockchain.chain.length + 1,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'transactions': Blockchain.currentTransactions,
+      'transactions': [...Blockchain.currentTransactions],
       'proof': proof,
       'previousHash': previousHash ?? Blockchain.hash(Blockchain.chain[-1]),
     };
