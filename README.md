@@ -3,7 +3,7 @@ configured to enable running with [Docker](https://www.docker.com/).
 
 This sample code handles HTTP GET requests to `/` and `/echo/<message>`
 
-# Running the First Dart Blockchain Server
+# Running the First Dart Blockchain Node/Server
 
 ## Running with the Dart SDK
 
