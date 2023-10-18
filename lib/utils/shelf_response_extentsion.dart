@@ -13,13 +13,7 @@ extension Body on Request {
     return utf8.decode(bytes);
   }
 
-  Future<dynamic> getJsonBody() async {
-    // var dataStream = read();
-    // List<int> bytes = [];
-    // await dataStream.listen((chunk) => bytes.addAll(chunk)).asFuture();
-    // return json.decode(utf8.decode(bytes));
-    return json.decode(await readAsString());
-  }
+  Future<dynamic> getJsonBody() async => json.decode(await readAsString());
 }
 
 // Map<int, JwtClaim> calims = {};
@@ -32,7 +26,8 @@ extension Body on Request {
 // }
 
 class FixedResp {
-  static Response okM(String message, Object? result, [bool isDataStream = false]) {
+  static Response okM(String message, Object? result,
+      [bool isDataStream = false]) {
     return Response(
       HttpStatus.ok,
       body: json.encode({
@@ -42,7 +37,8 @@ class FixedResp {
     );
   }
 
-  static Response okStream(String message, Stream<List<int>> result, [Map<String, String> headers = const {}]) {
+  static Response okStream(String message, Stream<List<int>> result,
+      [Map<String, String> headers = const {}]) {
     return Response(
       HttpStatus.ok,
       headers: headers,
@@ -50,7 +46,7 @@ class FixedResp {
     );
   }
 
-  static Response response(int statusCode,String message, Object? result) {
+  static Response response(int statusCode, String message, Object? result) {
     return Response(
       statusCode,
       body: json.encode({
