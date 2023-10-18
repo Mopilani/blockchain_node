@@ -40,6 +40,7 @@ abstract class Blockchain {
   static bool validProof(int lastProof, int proof) {
     List<int> guessBytes = '$lastProof$proof'.codeUnits;
     String guessHash = HEX.encode(SHA256().update(guessBytes).digest());
+    print(guessHash);
     return guessHash.substring(0, 4) == "0000";
   }
 
@@ -64,6 +65,7 @@ abstract class Blockchain {
 
 class BlockchainImpl implements Blockchain {
   BlockchainImpl() {
+    print('Init with gensis block');
     newBlock(100, '1');
   }
 
@@ -74,7 +76,7 @@ class BlockchainImpl implements Blockchain {
   Map<String, dynamic> newBlock(int proof, [String? previousHash]) {
     Map<String, dynamic> block = {
       'index': Blockchain.chain.length + 1,
-      'timestamp': DateTime.timestamp(),
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
       'transactions': Blockchain.currentTransactions,
       'proof': proof,
       'previousHash': previousHash ?? Blockchain.hash(Blockchain.chain[-1]),
@@ -84,6 +86,7 @@ class BlockchainImpl implements Blockchain {
     Blockchain.currentTransactions.clear();
 
     Blockchain.chain.add(block);
+    // print('Added Gensis Block: $block');
     return block;
   }
 
@@ -101,7 +104,7 @@ class BlockchainImpl implements Blockchain {
   @override
   int proofOfWork(int lastProof) {
     int proof = 0;
-    while (Blockchain.validProof(lastProof, proof)) {
+    while (!Blockchain.validProof(lastProof, proof)) {
       proof += 1;
     }
 
