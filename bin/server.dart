@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:blockchain_node/models/blockchain.dart';
+import 'package:blockchain_node/utils/shelf_response_extentsion.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
@@ -25,8 +26,11 @@ Response _newTransaction(Request req) {
 }
 
 Response _chain(Request req) {
-  
-  return Response.ok('Hello, World!\n');
+  Map<String, dynamic> chainData = {
+    'chain': Blockchain.chain,
+    'length': Blockchain.chain.length,
+  };
+  return FixedResp.okM('OK', chainData);
 }
 
 Response _echoHandler(Request request) {
@@ -40,14 +44,14 @@ void main(List<String> args) async {
 
   String nodeIdentifier = Uuid().v4().replaceAll('-', '');
 
-// # Instantiate the Blockchain
+  // # Instantiate the Blockchain
   var blockchain = Blockchain();
 
   // Configure a pipeline that logs requests.
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
 
   // For running in containers, we respect the PORT environment variable.
-  final port = int.parse(Platform.environment['PORT'] ?? '8080');
+  final port = int.parse(Platform.environment['PORT'] ?? '8886');
   final server = await serve(handler, ip, port);
   print('Server listening on port ${server.port}');
 }
