@@ -26,6 +26,15 @@ abstract class Blockchain {
   /// return: <int> The index of the Block that will hold this transaction
   int newTransaction(sender, recipient, amount);
 
+  /// """
+  /// Simple Proof of Work Algorithm:
+  ///  - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'
+  ///  - p is the previous proof, and p' is the new proof
+  /// :param last_proof: <int>
+  /// :return: <int>
+  /// """
+  int proofOfWork(lastProof);
+
   /// Hashes a Block
   ///
   // Creates a SHA-256 hash of a Block
@@ -79,5 +88,15 @@ class BlockchainImpl implements Blockchain {
     });
 
     return lastBlock['index'] + 1;
+  }
+
+  @override
+  int proofOfWork(lastProof) {
+    int proof = 0;
+    while (validProof(lastProof, proof)) {
+      proof += 1;
+    }
+
+    return proof;
   }
 }
