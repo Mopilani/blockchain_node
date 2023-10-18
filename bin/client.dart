@@ -8,7 +8,7 @@ Future<void> main(List<String> args) async {
     Map<String, dynamic> newTrans = {
       "sender": "my address",
       "recipient": "someone else's address",
-      "amount": 5,
+      "amount": 5.0,
     };
     var res = await http.post(
       Uri.parse('http://localhost:8886/transactions/new'),
